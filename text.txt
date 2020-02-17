@@ -1,0 +1,5 @@
+lui $s1 0x1001
+lw $s2 0($s1)
+lw $s3 1($s1)
+add $s1 $s1 $s3
+lw $s5 0($s1)
