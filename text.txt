@@ -1,5 +1,22 @@
-lui $s1 0x1001
-lw $s2 0($s1)
-lw $s3 1($s1)
-add $s1 $s1 $s3
-lw $s5 0($s1)
+lui $s0 0x1001
+addi $s7 $s0 44
+addi $t1 $s0 0   
+addi $t2 $s0 0   
+addi $s6 $s0 0
+addi $t4 $0 1
+whilei: beq $t1 $s7 exiti 
+           addi $t2 $t1 4
+           whilej: beq $t2 $s7 exitj
+                   lw $k0 0($t1)
+                   lw $k1 0($t2)
+                   slt $s4 $k1 $k0
+                   beq $s4 $t4 swap 
+                   bne $s4 $t4 addj
+                   swap: sw $k1 0($t1)
+                         sw $k0 0($t2)
+                         j addj
+                   addj: addi $t2 $t2 4
+                   j whilej          
+           exitj: addi $t1 $t1 4
+                  j whilei
+    exiti: 

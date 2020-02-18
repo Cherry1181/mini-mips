@@ -5,6 +5,8 @@ using namespace std;
 
 class Instructions{
 public:
+    map<string,int> labels;
+	int pc=0;
 	int memory[1024];
 	int s[9]; 
 	int t[9];
@@ -28,7 +30,12 @@ public:
 		}
 		return NULL;
 	}
-
+    int zero(string str) {
+        if((str.compare("$zero")==0) || (str.compare("$0")==0))
+		return 0;
+		int ind=((int)str[2]-48);
+		return assign_pointer(str[1])[ind];
+	}
 	void lui(string str1,string str2) {
 		int ind=((int)str1[2]-48);
 	    stringstream ss;
@@ -37,7 +44,6 @@ public:
 	    ss >> n;
 	    n=n<<16;
 	    assign_pointer(str1[1])[ind]=n;
-	    cout << assign_pointer(str1[1])[1] << endl;
 	}
 
 	void load_word(string str1,string str2) {
@@ -45,71 +51,76 @@ public:
 	    int x=0,imm=0;
 	    while(str2[x]!='(') { 
 	    imm=imm*10+((int)str2[x]-48);
+		imm=imm/4;
 	    x++;
 	    } 
 	    int mem,ind2=((int)str2[x+3]-48);
 	    mem=assign_pointer(str2[x+2])[ind2];
 	    mem=(mem+imm*4-address)/4;
 		assign_pointer(str1[1])[ind1]=memory[mem];
-		cout << assign_pointer(str1[1])[ind1] << endl; 
 	}
 
 	void store_word(string str1,string str2) {
-	    int ind1=(int)str1[2]-48;
+	    int ind1=((int)str1[2]-48);
 	    int x=0,imm=0;
 	    while(str2[x]!='(') { 
 	    imm=imm*10+((int)str2[x]-48);
+		imm=imm/4;
 	    x++;
 	    } 
 	    int mem,ind2=((int)str2[x+3]-48);
 	    mem=assign_pointer(str2[x+2])[ind2];
 	    mem=(mem+imm*4-address)/4;
 	    memory[mem]=assign_pointer(str1[1])[ind1];
-	    cout << memory[mem] << endl;
 	}
 
 	void add(string str1,string str2,string str3) {
-	    int ind1=(int)str1[2];
-	    int ind2=(int)str2[2];
-	    int ind3=(int)str3[2];
-	    ind1-=48;
-	    ind2-=48;
-	    ind3-=48;
-	    assign_pointer(str1[1])[ind1]=assign_pointer(str2[1])[ind2]+assign_pointer(str3[1])[ind3];
-	    cout << s[ind1] << endl;
+	    int ind1=((int)str1[2]-48);
+	    assign_pointer(str1[1])[ind1]=zero(str2)+zero(str3);
 	}
 
 	void sub(string str1,string str2,string str3) {
-	    int ind1=(int)str1[2];
-	    int ind2=(int)str2[2];
-	    int ind3=(int)str3[2];
-	    ind1-=48;
-	    ind2-=48;
-	    ind3-=48;
-	    assign_pointer(str1[1])[ind1]=assign_pointer(str2[1])[ind2]-assign_pointer(str3[1])[ind3];
-	    cout << s[ind1] << endl;
+	    int ind1=((int)str1[2]-48);
+	    assign_pointer(str1[1])[ind1]=zero(str2)-zero(str3);
 	}
 
 	void load_immediate(string str1,string str2) {
 	    int ind=((int)str1[2]-48);
 	    int n;
-	    stringstream ss;
-	    ss << str2;
-	    ss >> n;
+		stringstream ss;
+		ss << str2;
+		ss >> n;
 	    assign_pointer(str1[1])[ind]=n;
-	   	cout << assign_pointer(str1[1])[ind] << endl;
 	}
 
 	void add_immediate(string str1,string str2,string str3) {
-	    int ind1=((int)str1[2]-48),ind2=((int)str2[2]-48);
+	    int ind1=((int)str1[2]-48);
 	    int n;
-	    stringstream ss;
-	    ss << str3;
-	    ss >> n;
-	    assign_pointer(str1[1])[ind1]=assign_pointer(str2[1])[ind2]+n;
-	    cout << assign_pointer(str1[1])[ind1] << endl;
+		stringstream ss;
+		ss << str3;
+		ss >> n; 
+	    assign_pointer(str1[1])[ind1]=zero(str2)+n;
 	}
-
+	void set_on_less_than(string str1,string str2,string str3) {
+		int n;
+        int ind1=((int)str1[2]-48);
+		if(zero(str2) < zero(str3))
+		    n=1;
+	    else 
+            n=0;
+        assign_pointer(str1[1])[ind1]=n;
+	}
+    void jump(string str1) {
+        pc=labels[str1];
+	}
+	void branch_equal(string str1,string str2,string str3) {
+		if(zero(str1) == zero(str2)) 
+			jump(str3);	
+	}
+	void branch_not_equal(string str1,string str2,string str3) {
+		if(zero(str1) != zero(str2)) 
+			jump(str3);
+	}
 };
 
 // DRIVER FUNCTION
@@ -117,21 +128,41 @@ public:
 int main(int argc, char const *argv[]){
 
     Instructions i;
-    i.memory[0]=10;
-	i.memory[1]=4;
+	int j;
 	fstream new_file;
 	new_file.open("text.txt",ios::in);
 	string str;
+	vector <string> instr;
 
-	while(getline(new_file,str)){
+    while(getline(new_file,str)) {
+        instr.push_back(str);
+		stringstream ss(str);
+		string w;
+		while(getline(ss,w,' ')) {
+		if(w=="")
+		    continue;
+		else if(w[w.length()-1]==':') 
+		    i.labels[w.substr(0,w.length()-1)]=i.pc;
+		}
+		++i.pc;
+	}
+    i.pc=0;
+	while(i.pc<instr.size()) {
 
 		vector <string> tokens;
-	    stringstream s(str);
+	    stringstream s(instr[i.pc]);
 	    string word;
 
-	    while(getline(s,word,' '))
-	    tokens.push_back(word);
+	    while(getline(s,word,' ')) {
+		if(word=="" || word[word.length()-1]==':')
+		    continue;
+		else 
+		    tokens.push_back(word);
+		}
 
+        ++i.pc;
+
+        if(tokens.size()!=0) {
 		if(tokens[0].compare("lui")==0)
 			i.lui(tokens[1],tokens[2]);
 		if(tokens[0].compare("lw")==0)
@@ -146,7 +177,17 @@ int main(int argc, char const *argv[]){
 			i.add_immediate(tokens[1],tokens[2],tokens[3]);
 		if(tokens[0].compare("li")==0)
 			i.load_immediate(tokens[1],tokens[2]);
+	    if(tokens[0].compare("slt")==0)
+		    i.set_on_less_than(tokens[1],tokens[2],tokens[3]);
+		if(tokens[0].compare("j")==0)
+		    i.jump(tokens[1]);
+		if(tokens[0].compare("beq")==0)
+		    i.branch_equal(tokens[1],tokens[2],tokens[3]);
+	    if(tokens[0].compare("bne")==0)
+		    i.branch_not_equal(tokens[1],tokens[2],tokens[3]);
+		}
 	}
-
+	for(j=0;j<11;j++) 
+		cout << i.memory[j] << endl;
 	return 0;
 }
