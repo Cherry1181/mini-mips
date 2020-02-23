@@ -1,10 +1,15 @@
 .data 
 size:
 .word 11
+<<<<<<< HEAD
+array:
+.word 5 6 3 2 9 12 11 4 7 10 0
+=======
 array:	
 .word 5, 6, 3, 2, 9, 12, 11, 4, 7, 10, 0
 newline:
     .asciiz "\n"
+>>>>>>> 19f716acc519cf6ed1e07e5956f60ec2c8bc49b6
 .text
 .globl main
 main:
@@ -32,4 +37,17 @@ main:
                            j whilej
              exitj:  addi $k0 $k0 1
                      j whilei
+<<<<<<< HEAD
+             exiti: addi $s7 $0 0
+                    print: beq $s7 $t0 exit
+                           sll $s6 $s7 2
+                           add $s6 $s0 $s6
+                           li $v0 1
+                           lw $a0 0($s6)
+                           syscall
+                           addi $s7 $s7 1
+                           j print
+                     exit: 
+=======
              exiti: jr $ra
+>>>>>>> 19f716acc519cf6ed1e07e5956f60ec2c8bc49b6
