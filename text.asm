@@ -1,10 +1,8 @@
 .data 
 size:
-.word 11
+.word 9
 array:
-.word 5 6 3 2 9 12 11 4 7 10 0
-newline:
-    .asciiz "\n"
+.word 5 6 9 12 11 4 7 10 0
 .text
 .globl main
 main:
@@ -41,5 +39,6 @@ main:
                            syscall
                            addi $s7 $s7 1
                            j print
-                     exit: 
-             exiti: jr $ra
+                    exit: 
+
+

@@ -164,7 +164,7 @@ int main(int argc, char const *argv[]) {
 Instructions i;
 int j;
 fstream new_file;
-new_file.open("text.txt",ios::in);
+new_file.open("text.asm",ios::in);
 string str;
 vector <string> instr;
 vector <string> line;
@@ -233,6 +233,8 @@ else if(line[line_num].find(".globl main")!=string::npos) {
 break; }
 }
 
+cout<<"INITIAL VALUES: ###################################"<<endl;
+
 for(int j=0;j<9;j++)
 cout << "s" << j << " " << i.s[j] << endl;
 for(int j=0;j<9;j++)
@@ -296,6 +298,9 @@ if(tokens[0].compare("syscall")==0)
 i.syscall();
 }
 }
+
+cout<<"FINAL VALUES: ###################################"<<endl;
+
 for(int j=0;j<9;j++)
 cout << "s" << j << " " << i.s[j] << endl;
 for(int j=0;j<9;j++)
