@@ -151,7 +151,7 @@ int main(int argc, char const *argv[]){
 Instructions i;
 int j;
 fstream new_file;
-new_file.open("text.txt",ios::in);
+new_file.open("text.asm",ios::in);
 string str;
 vector <string> instr;
 vector <string> line;
@@ -264,7 +264,32 @@ if(tokens[0].compare("sll")==0)
 i.shift_left_logical(tokens[1],tokens[2],tokens[3]);
 }
 }
+
+cout<<"REGISTER VALUES: ===================="<<endl<<endl;
+
+for(int j = 0; j< 9; j++){
+    cout<<"s["<<j<<"]"<<": "<<i.s[j]<<endl;
+}
+
+for(int j = 0; j< 9; j++){
+    cout<<"t["<<j<<"]"<<": "<<i.s[j]<<endl;
+}
+
+for(int j = 0; j< 2; j++){
+    cout<<"v["<<j<<"]"<<": "<<i.s[j]<<endl;
+}
+
+for(int j = 0; j< 4; j++){
+    cout<<"a["<<j<<"]"<<": "<<i.s[j]<<endl;
+}
+for(int j = 0; j< 2; j++){
+    cout<<"k["<<j<<"]"<<": "<<i.s[j]<<endl;
+}
+
+cout<<endl<<"MEMORY: =============================="<<endl<<endl;
+
 for(int j=i.labels["array"];j<i.memory[i.labels["size"]];j++)
-cout << i.memory[j] << endl;
+cout <<"Index "<<j-1<<": "<< i.memory[j] << endl;
 return 0;
+
 }
