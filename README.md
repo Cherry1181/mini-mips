@@ -19,7 +19,7 @@ HOW TO USE:
 COMMANDS IMPLEMENTED:
   lui, lw, sw, add, li, addi, slt, j, beq, bne, la, sll.
   
-#Contributors:
-Vaishnavi-cs18b028
-Darahas- cs18b007
+# Contributors:
+Vaishnavi- cs18b028<br/>
+Darahas- cs18b007<br/>
   
