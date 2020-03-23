@@ -108,10 +108,10 @@ return NULL;
 }
 
 int zero(string str) {
-if((str.compare("$zero")==0) || (str.compare("$0")==0))
-return 0;
-int ind=((int)str[2]-48);
-return assign_pointer(str[1])[ind];
+    if((str.compare("$zero")==0) || (str.compare("$0")==0))
+        return 0;
+    int ind=((int)str[2]-48);
+        return assign_pointer(str[1])[ind];
 }
 
 void write_back() {
@@ -134,31 +134,67 @@ void decode() {
     vector <string> tokens;
     string word;
     while(getline(*if_id,word,' ')) {
-    if(word=="" || word[word.length()-1]==':')
-    continue;
-    else
-    tokens.push_back(word);
+        if(word=="" || word[word.length()-1]==':')
+        continue;
+        else
+        tokens.push_back(word);
     }
     if(tokens.size()!=0) {
         reg_id_ex[0]=tokens[0];
-        for(int i=1;i<tokens.size();i++) {
-        reg_id_ex[i-1]=tokens[i];
-        id_ex[i-1]=zero(tokens[i]);
+        for(int i=1;i<tokens.size();i++) 
+            reg_id_ex[i-1]=tokens[i];
+        if(tokens[0].compare["jump"]==0)
+            pc=labels[reg_id_ex[0]];
+        else {
+            id_ex[0]=zero(reg_id_ex[0]);
+            if(tokens[0].compare("add")==0 || tokens[0].compare("sub")==0 || tokens[0].compare("slt")==0 || tokens[0].compare("addi")==0 || tokens[0].compare("sll")==0 || tokens[0].compare("beq")==0 || tokens[0].compare("bne")==0) {
+                id_ex[1]=zero(reg_id_ex[1]);
+                try {
+                id_ex[2]=zero(reg_id_ex[2]); 
+                }
+                catch(exception e) {
+                    try {
+                        stringstream ss;
+                        ss << reg_id_ex[2];
+                        ss >> id_ex[2]; }
+                    catch(exception e1) {
+                        if(tokens[0].compare("beq")==0 && id_ex[0]==id_ex[1])
+                            pc=labels[reg_id_ex[2]];
+                        if(tokens[0].compare("bne")==0 && id_ex[0]!=id_ex[1])
+                            pc=labels[reg_id_ex[2]];
+                                        }
+                }
+            }
+            if(tokens[0].compare("lw")==0 || tokens[0].compare("sw")==0) {
+                int x=0;
+                id_ex[2]=0;
+                while(reg_id_ex[1][x]!='(') {
+                    id_ex[2]=id_ex[2]*10+((int)reg_id_ex[1][x]-48);
+                    id_ex[2]=id_ex[2]/4;
+                    x++;    }
+                int ind2=((int)reg_id_ex[1][x+3]-48);
+                id_ex[1]=assign_pointer(reg_id_ex[1][x+2])[ind2];
+            }
+            if(tokens[0].compare("li")==0) {
+                stringstream ss;
+                ss << reg_id_ex[1];
+                ss >> id_ex[1];
+            }
+            if(tokens[0].compare("lui")==0) {
+                stringstream ss;
+                ss << hex << reg_id_ex[1];
+                ss >> id_ex[1];
+            }
+            if(tokens[0].compare("la")==0) 
+                id_ex[1]=labels[reg_id_ex[1]];
+        }
     }
-    //if(tokens[0].compare("lui")==0)
-    // i.lui(tokens[1],tokens[2]);
-    // if(tokens[0].compare("lw")==0)
-    // i.load_word(tokens[1],tokens[2]);
-    //if(tokens[0].compare("sw")==0)
-    // i.store_word(tokens[1],tokens[2]);
-    // if(tokens[0].compare("addi")==0)
-}
 }
 
 void fetch() {
     stringstream s(instr[i.pc]);
     if_id = &s;
-    ++i.pc;
+    ++pc;
 }
 
 // DRIVER FUNCTION
@@ -167,7 +203,7 @@ int main(int argc, char const *argv[]) {
     s[1]=2;
     s[3]=1;
 new_file.open("text.asm",ios::in);
-i.pc=0;
+    pc=0;
 while(getline(new_file,str))
     instr.push_back(str);
 while(clock_cycle>=0) {
