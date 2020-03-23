@@ -1,26 +1,14 @@
 // example for thread::join
 #include <bits/stdc++.h>       // std::cout
-#include <thread>         // std::thread, std::this_thread::sleep_for
-#include <chrono>         // std::chrono::seconds
-#include <pthread.h>
+using namespace std;
 
-void pause_thread(int n) 
-{
-  std::this_thread::sleep_for (std::chrono::seconds(n));
-  std::cout << "pause of " << n << " seconds ended\n";
-}
- 
 int main() 
-{
-  std::cout << "Spawning 3 threads...\n";
-  std::thread t1 (pause_thread,1);
-  std::thread t2 (pause_thread,2);
-  std::thread t3 (pause_thread,3);
-  std::cout << "Done spawning threads. Now waiting for them to join:\n";
-  t1.join();        
-  t2.join();
-  t3.join();
-  std::cout << "All threads joined!\n";
-
+{ 
+  string reg_id_ex="doggie";
+  int id_ex;
+  stringstream ss;
+  ss << reg_id_ex;
+  ss >> id_ex;
+  cout << id_ex << endl;
   return 0;
 }
