@@ -10,10 +10,12 @@ string str;
 vector <string> instr;
 string word;
 vector<string> tokens1;
+
 map<string,list<int>> imap;
 
 stringstream* if_id;
 int id_ex[3];
+string ex_cat, mem_cat, wb_cat;
 string reg_id_ex[3];
 int alu_flag=0;
 int ex_mem;
@@ -23,6 +25,7 @@ int mem_wb;
 int write_back_flag=0;
 
 map<string,int> labels;
+
 int pc=0;
 int memory[1024];
 int s[9]={0};
@@ -37,6 +40,16 @@ int index=0;
 
 class Instructions{
 public:
+
+    Instructions(){
+        imap.insert({"c1",list<int>{1,0,1}});
+        imap.insert({"c2",list<int>{1,0,1}});
+        imap.insert({"c3",list<int>{0,0,0}});
+        imap.insert({"c4",list<int>{1,1,1}});
+        imap.insert({"c5",list<int>{0,0,1}});
+        imap.insert({"c6",list<int>{0,0,0}});
+
+    }
 
 // void lui(string str1,string str2) {
 // int ind=((int)str1[2]-48);
@@ -151,7 +164,7 @@ void decode() {
     if(tokens.size()!=0) {
         for(int i=1;i<tokens.size();i++) 
             reg_id_ex[i-1]=tokens[i];
-        if(tokens[0].compare["jump"]==0)
+        if(tokens[0].compare["j"]==0)
             pc=labels[reg_id_ex[0]];
         else {
             id_ex[0]=zero(reg_id_ex[0]);
@@ -193,6 +206,7 @@ void decode() {
                 ss << hex << reg_id_ex[1];
                 ss >> id_ex[1];
             }
+            
             if(tokens[0].compare("la")==0) 
                 id_ex[1]=labels[reg_id_ex[1]];
             if(tokens[0].compare("add")==0 || tokens[0].compare("addi")==0)
@@ -218,18 +232,17 @@ void fetch() {
 int main(int argc, char const *argv[])  {
     s[1]=2;
     s[3]=1;
-new_file.open("text.asm",ios::in);
-    pc=0;
-while(getline(new_file,str))
-    instr.push_back(str);
-while(clock_cycle>=0) {
-    write_back();
-    mem();
-    execute();
-    decode();
-    fetch();
-    clock_cycle++;
-}
-
-return 0;
+    new_file.open("text.asm",ios::in);
+        pc=0;
+    while(getline(new_file,str))
+        instr.push_back(str);
+    while(clock_cycle>=0) {
+        write_back();
+        mem();
+        execute();
+        decode();
+        fetch();
+        clock_cycle++;
+    }
+    return 0;
 }
