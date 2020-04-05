@@ -23,6 +23,7 @@ int mem_read_flag=0;
 int mem_write_flag=0;
 int mem_wb;
 int write_back_flag=0;
+int id_ex_arr[5],ex_mem_arr[5],mem_wb_arr[5]; 
 
 map<string,int> labels;
 
@@ -158,7 +159,7 @@ void decode() {
     while(getline(*if_id,word,' ')) {
         if(word=="" || word[word.length()-1]==':')
             continue;
-        else
+        else 
             tokens.push_back(word);
     }
     if(tokens.size()!=0) {
