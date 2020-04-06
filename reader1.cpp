@@ -3,7 +3,6 @@ using namespace std;
 
 int clock_cycle=0;
 
-Instructions i;
 int j;
 fstream new_file;
 string str;
@@ -11,14 +10,15 @@ vector <string> instr;
 string word;
 vector<string> tokens1;
 
-map<string,list<int>> imap;
-
-stringstream* if_id;
+string if_id;
 int id_ex[3];
 string reg_id_ex[3]; 
 int ex_mem;
+string ex_mem_str;
 int mem_wb;
+string mem_wb_str;
 int id_ex_arr[5],ex_mem_arr[5],mem_wb_arr[5]; 
+string nop[4];
 
 map<string,int> labels;
 
@@ -30,7 +30,6 @@ int v[2]={0};
 int a[4]={0};
 int k[2]={0};
 int address=268500992;
-int index=0;
 
 // MIPS INSTRUCTIONS
 
@@ -59,8 +58,8 @@ int zero(string str) {
 
 void write_back() {
   if(mem_wb_arr[4]==1) {
-    int ind=((int)reg_id_ex[0][2]-48);
-    assign_pointer(reg_id_ex[0][1])[ind]=mem_wb;
+    int ind=((int)mem_wb_str[2]-48);
+    assign_pointer(mem_wb_str[1])[ind]=mem_wb;
   }
 }
 
@@ -73,10 +72,13 @@ void mem() {
     mem_wb=ex_mem;
   for(int x=0; x<5; x++)
     mem_wb_arr[x]=ex_mem_arr[x];
+  mem_wb_str=ex_mem_str;
+  if(nop[2].compare("none")==0)
+    nop[3]="none";
 }
 
 void execute() {
-  if(id_ex_arr[1]==0)
+  if(id_ex_arr[1]==0) 
     ex_mem=id_ex[1]+id_ex[2];
   if(id_ex_arr[1]==1)                           
     ex_mem=id_ex[1]-id_ex[2]; 
@@ -96,14 +98,19 @@ void execute() {
     ex_mem=id_ex[1]*4+address;
   for(int x=0; x<5; x++)
     ex_mem_arr[x]=id_ex_arr[x];
+  ex_mem_str=reg_id_ex[0];
+  if(nop[1].compare("none")==0)
+    nop[2]="none";
 }
 
 void decode() {
-    for(int x=0; x<5; x++)
+  for(int x=0; x<5; x++)
       id_ex_arr[x]=0;
+  if(if_id!="") {
     vector <string> tokens;
     string word;
-    while(getline(*if_id,word,' ')) {
+    stringstream ss(if_id);
+    while(getline(ss,word,' ')) {
         if(word=="" || word[word.length()-1]==':')
             continue;
         else 
@@ -112,7 +119,7 @@ void decode() {
     if(tokens.size()!=0) {
         for(int i=1;i<tokens.size();i++) 
             reg_id_ex[i-1]=tokens[i];
-        if(tokens[0].compare["j"]==0)
+        if(tokens[0].compare("j")==0)
             pc=labels[reg_id_ex[0]];
         else {
             id_ex[0]=zero(reg_id_ex[0]);
@@ -200,30 +207,41 @@ void decode() {
               id_ex_arr[1]=3;        
       }
     }
+  }
+  if(nop[0].compare("none")==0)
+    nop[1]="none";
 }
 
 void fetch() {
-    stringstream s(instr[i.pc]);
-    if_id = &s;
+  if(pc<instr.size()) {
+    if_id=instr[pc];
     ++pc;
+  }
+  else
+    nop[0]="none";
 }
 
 // DRIVER FUNCTION
 
 int main(int argc, char const *argv[])  {
-    s[1]=2;
-    s[3]=1;
+    s[2]=2;
+    s[5]=1;
+    pc=0;
     new_file.open("text.asm",ios::in);
-        pc=0;
     while(getline(new_file,str))
         instr.push_back(str);
     while(clock_cycle>=0) {
-        write_back();
-        mem();
-        execute();
-        decode();
-        fetch();
-        clock_cycle++;
+      if(nop[3].compare("none")==0)
+        break;
+      write_back();
+      mem();
+      execute();
+      decode();
+      fetch();
+      clock_cycle++;
     }
+    cout << clock_cycle << endl;
+    cout << s[1] << endl;
+    cout << s[4] << endl;
     return 0;
 }
