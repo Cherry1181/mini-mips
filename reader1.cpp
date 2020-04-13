@@ -18,6 +18,8 @@ string ex_mem_str="";
 int mem_wb;
 string mem_wb_str="";
 int id_ex_arr[5],ex_mem_arr[5],mem_wb_arr[5]; 
+string stall;
+int stall_count=0;
 string nop[4]={""};
 
 map<string,int> labels;
@@ -139,7 +141,31 @@ void decode() {
                 id_ex_arr[4]=1; 
             }
             if(tokens[0].compare("beq")==0 || tokens[0].compare("bne")==0) {
-                id_ex[1]=zero(reg_id_ex[1]);
+              id_ex[1]=zero(reg_id_ex[1]);
+              if(reg_id_ex[0].compare(ex_mem_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[0]=ex_mem;
+            }
+            if(reg_id_ex[0].compare(mem_wb_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[0]=mem_wb;
+            }
+            if(reg_id_ex[1].compare(ex_mem_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[1]=ex_mem;
+            }
+            if(reg_id_ex[1].compare(mem_wb_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[1]=mem_wb;
+            }
                 if((tokens[0].compare("beq")==0 && id_ex[0]==id_ex[1]) || (tokens[0].compare("bne")==0 && id_ex[0]!=id_ex[1])) {
                     pc=labels[reg_id_ex[2]];
                     id_ex_arr[0]=1;
@@ -199,14 +225,30 @@ void decode() {
               }
               id_ex_arr[4]=1;
             }
-            if(reg_id_ex[1].compare(ex_mem_str)==0)
-              id_ex[1]=ex_mem;
-            if(reg_id_ex[1].compare(mem_wb_str)==0)
-              id_ex[1]=mem_wb;
-            if(reg_id_ex[2].compare(ex_mem_str)==0)
-              id_ex[2]=ex_mem;
-            if(reg_id_ex[2].compare(mem_wb_str)==0)
-              id_ex[2]=mem_wb;
+            if(reg_id_ex[1].compare(ex_mem_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[1]=ex_mem;
+            }
+            if(reg_id_ex[1].compare(mem_wb_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[1]=mem_wb;
+            }
+            if(reg_id_ex[2].compare(ex_mem_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[2]=ex_mem;
+            }
+            if(reg_id_ex[2].compare(mem_wb_str)==0) {
+              if(ex_mem_arr[2]==1)
+                stall="stall";
+              else
+                id_ex[2]=mem_wb;
+            }
             if(tokens[0].compare("sub")==0)
               id_ex_arr[1]=1;
             if(tokens[0].compare("sll")==0)
@@ -215,6 +257,11 @@ void decode() {
               id_ex_arr[1]=3;        
       }
     }
+  }
+  if(stall.compare("stall")==0) {
+    stall_count++;
+    pc--;
+    stall="";
   }
   if(nop[0].compare("none")==0)
     nop[1]="none";
@@ -233,8 +280,8 @@ void fetch() {
 
 int main(int argc, char const *argv[])  {
     s[2]=2;
-    s[3]=1;
-    s[5]=4;
+    s[7]=268500992;
+    memory[0]=1;
     pc=0;
     new_file.open("text.asm",ios::in);
     while(getline(new_file,str))
@@ -250,9 +297,7 @@ int main(int argc, char const *argv[])  {
       clock_cycle++;
     }
     cout << clock_cycle << endl;
+    cout << s[0] << endl;
     cout << s[1] << endl;
-    cout << s[4] << endl;
-    cout << s[5] << endl;
-    cout << s[6] << endl;
     return 0;
 }
