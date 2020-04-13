@@ -14,11 +14,11 @@ string if_id;
 int id_ex[3];
 string reg_id_ex[3]; 
 int ex_mem;
-string ex_mem_str;
+string ex_mem_str="";
 int mem_wb;
-string mem_wb_str;
+string mem_wb_str="";
 int id_ex_arr[5],ex_mem_arr[5],mem_wb_arr[5]; 
-string nop[4];
+string nop[4]={""};
 
 map<string,int> labels;
 
@@ -78,7 +78,7 @@ void mem() {
 }
 
 void execute() {
-  if(id_ex_arr[1]==0) 
+  if(id_ex_arr[1]==0)  
     ex_mem=id_ex[1]+id_ex[2];
   if(id_ex_arr[1]==1)                           
     ex_mem=id_ex[1]-id_ex[2]; 
@@ -124,9 +124,9 @@ void decode() {
         else {
             id_ex[0]=zero(reg_id_ex[0]);
             if(tokens[0].compare("add")==0 || tokens[0].compare("sub")==0 || tokens[0].compare("slt")==0) {
-                id_ex[1]=zero(reg_id_ex[1]);
-                id_ex[2]=zero(reg_id_ex[2]); 
-                id_ex_arr[4]=1; 
+              id_ex[1]=zero(reg_id_ex[1]);
+              id_ex[2]=zero(reg_id_ex[2]); 
+              id_ex_arr[4]=1; 
             }     
             if(tokens[0].compare("addi")==0 || tokens[0].compare("sll")==0) {
                 id_ex[1]=zero(reg_id_ex[1]);
@@ -199,6 +199,14 @@ void decode() {
               }
               id_ex_arr[4]=1;
             }
+            if(reg_id_ex[1].compare(ex_mem_str)==0)
+              id_ex[1]=ex_mem;
+            if(reg_id_ex[1].compare(mem_wb_str)==0)
+              id_ex[1]=mem_wb;
+            if(reg_id_ex[2].compare(ex_mem_str)==0)
+              id_ex[2]=ex_mem;
+            if(reg_id_ex[2].compare(mem_wb_str)==0)
+              id_ex[2]=mem_wb;
             if(tokens[0].compare("sub")==0)
               id_ex_arr[1]=1;
             if(tokens[0].compare("sll")==0)
@@ -225,7 +233,8 @@ void fetch() {
 
 int main(int argc, char const *argv[])  {
     s[2]=2;
-    s[5]=1;
+    s[3]=1;
+    s[5]=4;
     pc=0;
     new_file.open("text.asm",ios::in);
     while(getline(new_file,str))
@@ -243,5 +252,7 @@ int main(int argc, char const *argv[])  {
     cout << clock_cycle << endl;
     cout << s[1] << endl;
     cout << s[4] << endl;
+    cout << s[5] << endl;
+    cout << s[6] << endl;
     return 0;
 }
