@@ -203,7 +203,7 @@ class Instructions {
                       id_ex_arr[3]=1;
                 }
                 if(tokens[0].compare("li")==0) {
-                  stringstinstr[pc]ream ss;
+                  stringstream ss;
                   if(reg_id_ex[1][1]=='x')
                     ss << hex << reg_id_ex[1];
                   else
