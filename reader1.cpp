@@ -165,9 +165,6 @@ class Instructions {
                     id_ex[0]=ex_mem;
                 }
                 else if(reg_id_ex[0].compare(mem_wb_str)==0) {
-                 if(ex_mem_arr[2]==1)
-                    stall="stall";
-                  else
                     id_ex[0]=mem_wb;
                 }
                 if(reg_id_ex[1].compare(ex_mem_str)==0) {
@@ -177,9 +174,6 @@ class Instructions {
                     id_ex[1]=ex_mem;
                 }
                 else if(reg_id_ex[1].compare(mem_wb_str)==0) {
-                  if(ex_mem_arr[2]==1)
-                    stall="stall";
-                  else
                     id_ex[1]=mem_wb;
                 }
                     if((tokens[0].compare("beq")==0 && id_ex[0]==id_ex[1]) || (tokens[0].compare("bne")==0 && id_ex[0]!=id_ex[1])) {
@@ -252,9 +246,6 @@ class Instructions {
                     id_ex[1]=ex_mem;
                 }
                 else if(reg_id_ex[1].compare(mem_wb_str)==0) {
-                  if(ex_mem_arr[2]==1)
-                    stall="stall";
-                  else
                     id_ex[1]=mem_wb;
                 }
                 if(reg_id_ex[2].compare(ex_mem_str)==0) {
@@ -264,9 +255,6 @@ class Instructions {
                     id_ex[2]=ex_mem;
                 }
                 else if(reg_id_ex[2].compare(mem_wb_str)==0) {
-                  if(ex_mem_arr[2]==1)
-                    stall="stall";
-                  else
                     id_ex[2]=mem_wb;
                 }
                 if(tokens[0].compare("sub")==0)
