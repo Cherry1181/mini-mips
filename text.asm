@@ -1,8 +1,8 @@
 .data 
 size:
-.word 9
+.word 3
 array:
-.word 5 6 9 12 11 4 7 10 0
+.word 11 4 7
 .text
 .globl main
 main:

@@ -361,7 +361,7 @@ int main(int argc, char const *argv[])  {
     }
 
     i.pc=0;
-
+    int x;
     while(clock_cycle>=0) {
       cout << clock_cycle << endl;
       if(i.nop[3].compare("none")==0)
@@ -372,8 +372,20 @@ int main(int argc, char const *argv[])  {
       i.decode();
       i.fetch();
       clock_cycle++;
+      cout << i.k[0] << endl;
+      cout << i.k[1] << endl;
+      cout << i.t[0] << endl;
+      cout << i.t[1] << endl;
+      cout << i.t[8] << endl;
+      cout << i.t[9] << endl;
+      cout << i.s[0] << endl;
+      cout << i.s[1] << endl;
+      cout << i.s[2] << endl;
+      cout << i.s[6] << endl;
+      cout << i.s[8] << endl;
+      cout << i.s[7] << endl;
+      cin >> x;
     }
-    cout << clock_cycle << endl;
-    
+
     return 0;
 }
