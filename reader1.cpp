@@ -69,7 +69,6 @@ class Instructions {
     }
 
     void write_back() {
-      cout << "write back" << endl;
       if(mem_wb_arr[4]==1) {
         int ind=((int)mem_wb_str[2]-48);
         assign_pointer(mem_wb_str[1])[ind]=mem_wb;
@@ -77,13 +76,12 @@ class Instructions {
     }
 
     void mem() {
-      cout << "memory" << endl;
-      if(ex_mem_arr[2]==1) {
-        cout << ex_mem << endl;
+      if(ex_mem_arr[2]==1) 
         mem_wb=memory[ex_mem];
+      else if(ex_mem_arr[3]==1) {
+        int ind=((int)ex_mem_str[2]-48);
+        memory[ex_mem]=assign_pointer(ex_mem_str[1])[ind];
       }
-      else if(ex_mem_arr[3]==1) 
-        memory[ex_mem]=id_ex[0];
       else 
         mem_wb=ex_mem;
       for(int x=0; x<5; x++)
@@ -94,12 +92,11 @@ class Instructions {
     }
 
     void execute() {
-      cout << "execute" << endl;
       if(id_ex_arr[1]==0)  
         ex_mem=id_ex[1]+id_ex[2];
       if(id_ex_arr[1]==1)                           
         ex_mem=id_ex[1]-id_ex[2]; 
-      if(id_ex_arr[1]==2)
+      if(id_ex_arr[1]==2) 
         ex_mem=id_ex[1]<<id_ex[2];
       if(id_ex_arr[1]==3) {
         if(id_ex[1]<id_ex[2])
@@ -121,9 +118,9 @@ class Instructions {
     }
 
     void decode() {
-      cout << "decode" << endl;
       for(int x=0; x<5; x++)
           id_ex_arr[x]=0;
+        
       if(if_id!="") {
         vector <string> tokens;
         string word;
@@ -149,37 +146,39 @@ class Instructions {
                 if(tokens[0].compare("addi")==0 || tokens[0].compare("sll")==0) {
                     id_ex[1]=zero(reg_id_ex[1]);
                     stringstream ss;
-                    if(reg_id_ex[1][1]=='x')
-                      ss << hex << reg_id_ex[1];
+                    if(reg_id_ex[2][1]=='x')
+                      ss << hex << reg_id_ex[2];
                     else
-                      ss << reg_id_ex[1];
+                      ss << reg_id_ex[2];
                     ss >> id_ex[2];
                     id_ex_arr[4]=1; 
                 }
                 if(tokens[0].compare("beq")==0 || tokens[0].compare("bne")==0) {
                   id_ex[1]=zero(reg_id_ex[1]);
-                if(reg_id_ex[0].compare(ex_mem_str)==0) {
+                if(reg_id_ex[0].compare("")!=0 && reg_id_ex[0].compare(ex_mem_str)==0) {
                   if(ex_mem_arr[2]==1)
                     stall="stall";
                   else
                     id_ex[0]=ex_mem;
                 }
-                else if(reg_id_ex[0].compare(mem_wb_str)==0) {
+                else if(reg_id_ex[0].compare("")!=0 && reg_id_ex[0].compare(mem_wb_str)==0) {
                     id_ex[0]=mem_wb;
                 }
-                if(reg_id_ex[1].compare(ex_mem_str)==0) {
+                if(reg_id_ex[1].compare("")!=0 && reg_id_ex[1].compare(ex_mem_str)==0) {
                   if(ex_mem_arr[2]==1)
                     stall="stall";
                   else
                     id_ex[1]=ex_mem;
                 }
-                else if(reg_id_ex[1].compare(mem_wb_str)==0) {
+                else if(reg_id_ex[1].compare("")!=0 && reg_id_ex[1].compare(mem_wb_str)==0) {
                     id_ex[1]=mem_wb;
                 }
                     if((tokens[0].compare("beq")==0 && id_ex[0]==id_ex[1]) || (tokens[0].compare("bne")==0 && id_ex[0]!=id_ex[1])) {
                         pc=labels[reg_id_ex[2]];
                         id_ex_arr[0]=1;
                     }
+                    for(int i=0; i<3; i++)
+                      reg_id_ex[i]="";
                 }
                 if(tokens[0].compare("lw")==0 || tokens[0].compare("sw")==0) {
                     id_ex_arr[1]=4;
@@ -192,15 +191,13 @@ class Instructions {
                     int ind2=((int)reg_id_ex[1][x+3]-48);
                     id_ex[1]=assign_pointer(reg_id_ex[1][x+2])[ind2];
                     reg_id_ex[1]=reg_id_ex[1].substr(x+1,3);
-                    cout << reg_id_ex[1] << endl;
                     if(tokens[0].compare("lw")==0) {
                       id_ex_arr[2]=1;
                       id_ex_arr[4]=1;
                     }
                     else if(tokens[0].compare("sw")==0) 
                       id_ex_arr[3]=1;
-                    cout << id_ex[1] << endl;
-                    cout << id_ex[2] << endl;
+                    reg_id_ex[2]="";
                 }
                 if(tokens[0].compare("li")==0) {
                   stringstream ss;
@@ -211,6 +208,7 @@ class Instructions {
                   ss >> id_ex[1];
                   id_ex_arr[2]=5;
                   id_ex_arr[4]=1;
+                  reg_id_ex[2]="";
                 }
                 if(tokens[0].compare("lui")==0) {
                   stringstream ss;
@@ -220,8 +218,9 @@ class Instructions {
                     ss << reg_id_ex[1];
                   ss >> id_ex[1];
                   id_ex[2]=16;
-                  id_ex_arr[2]=2;
+                  id_ex_arr[1]=2;
                   id_ex_arr[4]=1;
+                  reg_id_ex[2]="";
                 }
                 if(tokens[0].compare("la")==0) {
                   if(labels.find(reg_id_ex[1]) == labels.end()) {
@@ -238,23 +237,24 @@ class Instructions {
                     id_ex_arr[1]=6;
                   }
                   id_ex_arr[4]=1;
+                  reg_id_ex[2]="";
                 }
-                if(reg_id_ex[1].compare(ex_mem_str)==0) {
+                if(reg_id_ex[1].compare("")!=0 && reg_id_ex[1].compare(ex_mem_str)==0) {
                   if(ex_mem_arr[2]==1)
                     stall="stall";
                   else
                     id_ex[1]=ex_mem;
                 }
-                else if(reg_id_ex[1].compare(mem_wb_str)==0) {
+                else if(reg_id_ex[1].compare("")!=0 && reg_id_ex[1].compare(mem_wb_str)==0) {
                     id_ex[1]=mem_wb;
                 }
-                if(reg_id_ex[2].compare(ex_mem_str)==0) {
+                if(reg_id_ex[2].compare("")!=0 && reg_id_ex[2].compare(ex_mem_str)==0) {
                   if(ex_mem_arr[2]==1)
                     stall="stall";
                   else
                     id_ex[2]=ex_mem;
                 }
-                else if(reg_id_ex[2].compare(mem_wb_str)==0) {
+                else if(reg_id_ex[2].compare("")!=0 && reg_id_ex[2].compare(mem_wb_str)==0) {
                     id_ex[2]=mem_wb;
                 }
                 if(tokens[0].compare("sub")==0)
@@ -278,8 +278,6 @@ class Instructions {
     void fetch() {
       if(pc<instr.size()) {
         if_id=instr[pc];
-        cout << "fetch" << endl;
-        cout << instr[pc] << endl; 
         ++pc;
       }
       else
@@ -361,9 +359,8 @@ int main(int argc, char const *argv[])  {
     }
 
     i.pc=0;
-    int x;
     while(clock_cycle>=0) {
-      cout << clock_cycle << endl;
+      int x;
       if(i.nop[3].compare("none")==0)
         break;
       i.write_back();
@@ -372,20 +369,11 @@ int main(int argc, char const *argv[])  {
       i.decode();
       i.fetch();
       clock_cycle++;
-      cout << i.k[0] << endl;
-      cout << i.k[1] << endl;
-      cout << i.t[0] << endl;
-      cout << i.t[1] << endl;
-      cout << i.t[8] << endl;
-      cout << i.t[9] << endl;
-      cout << i.s[0] << endl;
-      cout << i.s[1] << endl;
-      cout << i.s[2] << endl;
-      cout << i.s[6] << endl;
-      cout << i.s[8] << endl;
-      cout << i.s[7] << endl;
-      cin >> x;
     }
+    cout << clock_cycle << endl;
+    cout << i.stall_count << endl;
+    for(int y=0; y<11; y++)
+      cout << i.memory[y] << endl;
 
     return 0;
 }

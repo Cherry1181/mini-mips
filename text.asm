@@ -30,13 +30,4 @@ main:
                            j whilej
              exitj:  addi $k0 $k0 1
                      j whilei
-             exiti: addi $s7 $0 0
-                    print: beq $s7 $t0 exit
-                           sll $s6 $s7 2
-                           add $s6 $s0 $s6
-                           li $v0 1
-                           lw $a0 0($s6)
-                           syscall
-                           addi $s7 $s7 1
-                           j print
-                    exit: 
+             exiti: 

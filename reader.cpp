@@ -90,8 +90,11 @@ void execute() {
     else 
       ex_mem=0;
     }
-  if(id_ex_arr[1]==4) 
+  if(id_ex_arr[1]==4) {
     ex_mem=(id_ex[1]+id_ex[2]*4-address)/4;
+    cout << id_ex[0] << endl;
+    cout << ex_mem << endl;
+  }
   if(id_ex_arr[1]==5)
     ex_mem=id_ex[1];
   if(id_ex_arr[1]==6)
@@ -131,10 +134,10 @@ void decode() {
             if(tokens[0].compare("addi")==0 || tokens[0].compare("sll")==0) {
                 id_ex[1]=zero(reg_id_ex[1]);
                 stringstream ss;
-                if(reg_id_ex[1][1]=='x')
-                  ss << hex << reg_id_ex[1];
+                if(reg_id_ex[2][1]=='x')
+                  ss << hex << reg_id_ex[2];
                 else
-                  ss << reg_id_ex[1];
+                  ss << reg_id_ex[2];
                 ss >> id_ex[2];
                 id_ex_arr[4]=1; 
             }
@@ -159,7 +162,7 @@ void decode() {
                   id_ex_arr[2]=1;
                   id_ex_arr[4]=1;
                 }
-                else if(tokens[0].compare("lw")==0) 
+                else if(tokens[0].compare("sw")==0) 
                   id_ex_arr[3]=1;
             }
             if(tokens[0].compare("li")==0) {
@@ -180,7 +183,7 @@ void decode() {
                 ss << reg_id_ex[1];
               ss >> id_ex[1];
               id_ex[2]=16;
-              id_ex_arr[2]=2;
+              id_ex_arr[1]=2;
               id_ex_arr[4]=1;
             }
             if(tokens[0].compare("la")==0) {
@@ -241,7 +244,8 @@ int main(int argc, char const *argv[])  {
       clock_cycle++;
     }
     cout << clock_cycle << endl;
+    cout << s[0] << endl;
     cout << s[1] << endl;
-    cout << s[4] << endl;
+    cout << memory[0] << endl;
     return 0;
 }
