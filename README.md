@@ -11,7 +11,7 @@ OUTPUT:<br/>
   Displays the values of registers, memory, no. of latches, clock cycles taken to complete.
   
 HOW TO USE:<br/>
-  Copy or download reader.cpp file, write a .asm file and keep it in the same directory and compile and run the reader1.cpp file.<br/>
+  Copy or download reader1.cpp file, write a .asm file and keep it in the same directory and compile and run the reader1.cpp file.<br/>
   A small asm code(bubble sort) is present as text.asm.<br/>
   Command: g++ -o reader1.cpp reader1.out<br/>
   Run: reader1.out
