@@ -427,14 +427,26 @@ int main(int argc, char const *argv[])
     i.fetch();
     clock_cycle++;
   }
-  cout<<"-------------------------"<<endl;
-  cout <<"No. of clock cycles for complete execution: "<< clock_cycle << endl;
-  cout<<"-------------------------"<<endl;
-  cout <<"Stall Count: "<< i.stall_count << endl;
-  cout<<"-------------------------"<<endl;
-  cout<<"Memory after execution: ";
-  for (int y = 0; y < 11; y++)
-    cout << i.memory[y] <<" ";
-  cout<<endl;
+  cout << "-------------------------" << endl;
+  cout << "No. of clock cycles for complete execution: " << clock_cycle << endl;
+  cout << "-------------------------" << endl;
+  cout << "Stall Count: " << i.stall_count << endl;
+  cout << "-------------------------" << endl;
+  cout << "Memory after execution: ";
+  for (int y = 0; y < i.index; y++)
+    cout << i.memory[y] << " ";
+  cout << endl;
+  cout << "-------------------------" << endl;
+  cout << "Register Values:" << endl;
+  for (int j = 0; j < 9; j++)
+    cout << "s" << j << " " << i.s[j] << endl;
+  for (int j = 0; j < 9; j++)
+    cout << "t" << j << " " << i.t[j] << endl;
+  for (int j = 0; j < 2; j++)
+    cout << "v" << j << " " << i.v[j] << endl;
+  for (int j = 0; j < 4; j++)
+    cout << "a" << j << " " << i.a[j] << endl;
+  for (int j = 0; j < 2; j++)
+    cout << "k" << j << " " << i.k[j] << endl;
   return 0;
 }
