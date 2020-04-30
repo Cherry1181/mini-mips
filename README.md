@@ -8,7 +8,7 @@ INPUT:<br/>
   Ex: lw $s0 0($t0)
   
 OUTPUT:<br/>
-  Displays the values of registers, memory, no. of latches
+  Displays the values of registers, memory, no. of latches, clock cycles taken to complete.
   
 HOW TO USE:<br/>
   Copy or download reader.cpp file, write a .asm file and keep it in the same directory and compile and run the reader1.cpp file.<br/>
