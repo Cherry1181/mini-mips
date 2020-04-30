@@ -19,6 +19,9 @@ HOW TO USE:<br/>
 COMMANDS IMPLEMENTED:<br/>
   lui, lw, sw, add, li, addi, slt, j, beq, bne, la, sll.<br/>
   
+# Latest Info
+Please visit branch2 for improved features.
+  
 # Contributors:
 Vaishnavi- cs18b028<br/>
 Darahas- cs18b007<br/>
